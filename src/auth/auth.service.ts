@@ -1,4 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { HashService } from 'src/shared/hash.service';
 import { JwtService } from 'src/shared/jwt.service';
 import { PrismaService } from './../shared/prisma.service';
 import { LoginUserInput } from './dto/login-user-input';
@@ -9,19 +10,22 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private hashService: HashService,
   ) { }
 
   async login(loginUserInput: LoginUserInput) {
     const user = await this.prisma.user.findUnique({ where: { email: loginUserInput.email } });
     if (!user)
       throw new ForbiddenException("User Not Found");
-    if (user.password !== loginUserInput.password)
+
+    const pMatch = await this.hashService.compare(loginUserInput.password, user.password);
+    if (!pMatch)
       throw new ForbiddenException('Username or Password is entered incorrectly');
-    return{
+    return {
       access_token: this.jwtService.sign(user.id, user.email),
-      user:{...user}
+      user: { ...user }
+    }
   }
-}
 
   // create(createAuthInput: CreateAuthInput) {
   //   return 'This action adds a new auth';
