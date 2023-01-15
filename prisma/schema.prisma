@@ -17,20 +17,22 @@ model User {
   lastName  String   @db.VarChar(255)
   password  String
   createdAt DateTime @default(now())
+  tods      Todo[]
 }
 
-model TodoList {
-  id          String   @id @default(uuid())
-  title       String   @db.VarChar(255)
-  description String   @db.VarChar(500)
-  status      TodoStatus  @default(To_do)
-  createdAt   DateTime @default(now())
-  updateAt    DateTime @default(now())
+model Todo {
+  id          String     @id @default(uuid())
+  userEmail   String
+  user        User       @relation(fields: [userEmail], references: [email])
+  title       String     @db.VarChar(255)
+  description String     @db.VarChar(500)
+  status      TodoStatus @default(To_do)
+  createdAt   DateTime   @default(now())
+  updateAt    DateTime   @default(now())
 }
 
-enum TodoStatus{
-    To_do
-    in_progress
-    done
+enum TodoStatus {
+  To_do
+  in_progress
+  done
 }
-
