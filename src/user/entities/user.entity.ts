@@ -11,7 +11,7 @@ export class User {
   @Field()
   firstName:string
 
-  @Field(()=>User)
+  @Field()
   lastName:string
   
 }
