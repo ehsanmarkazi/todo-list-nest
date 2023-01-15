@@ -6,6 +6,31 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  firstName String   @db.VarChar(255)
+  lastName  String   @db.VarChar(255)
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model TodoList {
+  id          String   @id @default(uuid())
+  title       String   @db.VarChar(255)
+  description String   @db.VarChar(500)
+  status      TodoStatus  @default(To_do)
+  createdAt   DateTime @default(now())
+  updateAt    DateTime @default(now())
+}
+
+enum TodoStatus{
+    To_do
+    in_progress
+    done
+}
+
