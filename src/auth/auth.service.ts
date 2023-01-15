@@ -1,8 +1,9 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { HashService } from 'src/shared/hash.service';
 import { JwtService } from 'src/shared/jwt.service';
 import { PrismaService } from './../shared/prisma.service';
 import { LoginUserInput } from './dto/login-user-input';
+import { RegisterUserInput } from './dto/register-user-input.dto';
 
 
 @Injectable()
@@ -13,7 +14,7 @@ export class AuthService {
     private hashService: HashService,
   ) { }
 
-  async login(loginUserInput: LoginUserInput) {
+  async signIn(loginUserInput: LoginUserInput) {
     const user = await this.prisma.user.findUnique({ where: { email: loginUserInput.email } });
     if (!user)
       throw new ForbiddenException("User Not Found");
@@ -27,23 +28,34 @@ export class AuthService {
     }
   }
 
-  // create(createAuthInput: CreateAuthInput) {
-  //   return 'This action adds a new auth';
-  // }
+  async signUp(registerUserInput: RegisterUserInput) {
+    const hash = await this.hashService.hash(registerUserInput.password)
+    try {
+      const checkUser = await this.prisma.user.findUnique({ where: { email: registerUserInput.email } });
+      if (checkUser)
+        throw new BadRequestException('This ٍEmail is Already Registered');
 
-  findAll() {
-    return `This action returns all auth`;
+      const user = await this.prisma.user.create({
+        data: {
+          email: registerUserInput.email,
+          firstName: registerUserInput.firstName,
+          lastName: registerUserInput.lastName,
+          password: hash,
+          createdAt: new Date(),
+        },
+      
+      });
+      return {
+        access_token: this.jwtService.sign(user.id, user.email),
+        user: { ...user }
+      }
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      throw new NotFoundException(error.message);
+    }
+
+
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
 
-  // update(id: number, updateAuthInput: UpdateAuthInput) {
-  //   return `This action updates a #${id} auth`;
-  // }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
 }
