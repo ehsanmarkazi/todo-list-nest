@@ -7,6 +7,7 @@ import { PrismaService } from './shared/prisma.service';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
+import { TodoModule } from './todo/todo.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UserModule } from './user/user.module';
     }),
   AuthModule,
   UserModule,
+  TodoModule,
 
   ],
   
