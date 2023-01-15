@@ -18,6 +18,7 @@ input LoginUserInput {
 }
 
 type Mutation {
+  Register(registerUserInput: RegisterUserInput!): RegisterResponse!
   createUser(createUserInput: CreateUserInput!): User!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   removeUser(id: Int!): User!
@@ -26,6 +27,18 @@ type Mutation {
 
 type Query {
   user(id: Int!): User!
+}
+
+type RegisterResponse {
+  access_token: String
+  user: User
+}
+
+input RegisterUserInput {
+  email: String
+  firstName: String!
+  lastName: String!
+  password: String
 }
 
 input UpdateUserInput {
@@ -38,5 +51,5 @@ type User {
   email: String!
   firstName: String!
   id: Int!
-  lastName: User!
+  lastName: String!
 }
