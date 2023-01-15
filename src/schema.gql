@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateTodoInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 input CreateUserInput {
   """Example field (placeholder)"""
   exampleField: Int!
@@ -19,13 +24,18 @@ input LoginUserInput {
 
 type Mutation {
   Register(registerUserInput: RegisterUserInput!): RegisterResponse!
+  createTodo(createTodoInput: CreateTodoInput!): Todo!
   createUser(createUserInput: CreateUserInput!): User!
   login(loginUserInput: LoginUserInput!): LoginResponse!
+  removeTodo(id: Int!): Todo!
   removeUser(id: Int!): User!
+  updateTodo(updateTodoInput: UpdateTodoInput!): Todo!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
 type Query {
+  todo(id: Int!): Todo!
+  todos: [Todo!]!
   user(id: Int!): User!
 }
 
@@ -39,6 +49,17 @@ input RegisterUserInput {
   firstName: String!
   lastName: String!
   password: String
+}
+
+type Todo {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateTodoInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
 
 input UpdateUserInput {

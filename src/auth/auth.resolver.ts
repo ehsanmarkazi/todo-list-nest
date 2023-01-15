@@ -5,7 +5,7 @@ import { LoginUserInput } from './dto/login-user-input';
 import { RegisterResponse } from './dto/register-response.dto';
 import { JwtGuard } from './guard/jwt.guard';
 import { UseGuards, Get } from '@nestjs/common';
-import { GetUSer } from './decorator/get-user.decorator';
+import { GetUser } from './decorator/get-user.decorator';
 import { LoginResponse } from './dto/login-response.dto';
 import { RegisterUserInput } from './dto/register-user-input.dto';
 

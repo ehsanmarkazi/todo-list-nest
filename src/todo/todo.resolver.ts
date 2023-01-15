@@ -3,17 +3,22 @@ import { TodoService } from './todo.service';
 import { Todo } from './entities/todo.entity';
 import { CreateTodoInput } from './dto/create-todo.input';
 import { UpdateTodoInput } from './dto/update-todo.input';
+import { JwtGuard } from './../auth/guard/jwt.guard';
+import { UseGuards } from '@nestjs/common';
+import { GetUser } from 'src/auth/decorator/get-user.decorator';
 
 @Resolver(() => Todo)
 export class TodoResolver {
-  constructor(private readonly todoService: TodoService) {}
+  constructor(private readonly todoService: TodoService) { }
 
   @Mutation(() => Todo)
-  createTodo(@Args('createTodoInput') createTodoInput: CreateTodoInput) {
-    return this.todoService.create(createTodoInput);
+  //@UseGuards(JwtGuard)
+  createTodo(@Args('createTodoInput') createTodoInput: CreateTodoInput, @GetUser() user) {
+    return "hello"
   }
 
-  @Query(() => [Todo], { name: 'todo' })
+  @Query(() => [Todo], { name: 'todos' })
+  //@UseGuards(JwtGuard)
   findAll() {
     return this.todoService.findAll();
   }
