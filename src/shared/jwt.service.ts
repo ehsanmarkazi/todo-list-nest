@@ -29,7 +29,7 @@ export class JwtService {
         
 
         const token = await this.nestJwtService.signAsync(payload, {
-            expiresIn: '360s',
+            expiresIn: '3600s',
             secret: secret
         },);
 
