@@ -35,7 +35,7 @@ type Mutation {
   createTodo(createTodoInput: CreateTodoInput!): CreateTodoResponse!
   createUser(createUserInput: CreateUserInput!): User!
   login(loginUserInput: LoginUserInput!): LoginResponse!
-  removeTodo(id: Int!): Todo!
+  removeTodo(id: String!): Todo!
   removeUser(id: Int!): User!
   updateTodo(updateTodoInput: UpdateTodoInput!): Todo!
   updateUser(updateUserInput: UpdateUserInput!): User!
@@ -59,17 +59,24 @@ input RegisterUserInput {
   password: String
 }
 
+enum SomeEnum {
+  done
+  inProgress
+  todo
+}
+
 type Todo {
   createdAt: String!
   description: String!
   id: String!
-  status: String!
+  status: SomeEnum!
   title: String!
 }
 
 input UpdateTodoInput {
   description: String
-  id: Int!
+  id: String!
+  status: SomeEnum!
   title: String
 }
 
