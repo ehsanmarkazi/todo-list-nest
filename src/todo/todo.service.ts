@@ -9,6 +9,7 @@ export class TodoService {
     private prisma:PrismaService
   ){}
   create(createTodoInput: CreateTodoInput,user:string) {
+    
     return this.prisma.todo.create({
       data:{
         title:createTodoInput.title,
@@ -16,16 +17,17 @@ export class TodoService {
         userEmail :user,
         createdAt: new Date(),
         updateAt:new Date()
-      }
+      },
+     include:{user:{select:{email:true}}}
     })
   }
 
-  findAll() {
-    return `This action returns all todo`;
+  async findAll(id:string) {
+    return await this.prisma.todo.findMany({where:{user:{id}}}) 
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} todo`;
+  async findOne(id: string) {
+    return await this.prisma.todo.findUnique({where:{id}})
   }
 
   update(id: number, updateTodoInput: UpdateTodoInput) {

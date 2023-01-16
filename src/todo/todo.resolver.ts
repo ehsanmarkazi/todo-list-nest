@@ -7,6 +7,7 @@ import { UpdateTodoInput } from './dto/update-todo.input';
 import { JwtAuthGuard } from './../auth/guard/jwt.guard';
 import { CreateTodoResponse } from './dto/create-todo-response.dto';
 import { GetUser } from 'src/auth/decorator/get-user.decorator';
+import { User } from 'src/user/entities/user.entity';
 
 @Resolver(() => Todo)
 export class TodoResolver {
@@ -15,18 +16,18 @@ export class TodoResolver {
   @Mutation(() => CreateTodoResponse)
   @UseGuards(JwtAuthGuard)
   createTodo(@Args('createTodoInput') createTodoInput: CreateTodoInput, @GetUser() user) {
-    console.log(user)
-    return this.todoService.create(createTodoInput,"ehsn@gmail.com");
+    return this.todoService.create(createTodoInput, user.email);
   }
-  
+
   @Query(() => [Todo], { name: 'todos' })
-  //@UseGuards(JwtGuard)
-  findAll() {
-    return this.todoService.findAll();
+  @UseGuards(JwtAuthGuard)
+  findAll(@GetUser() user:User) {
+    return this.todoService.findAll(user.id);
   }
 
   @Query(() => Todo, { name: 'todo' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  @UseGuards(JwtAuthGuard)
+  findOne(@Args('id', { type: () => String }) id: string) {
     return this.todoService.findOne(id);
   }
 
