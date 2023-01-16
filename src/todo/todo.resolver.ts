@@ -32,12 +32,14 @@ export class TodoResolver {
   }
 
   @Mutation(() => Todo)
+  @UseGuards(JwtAuthGuard)
   updateTodo(@Args('updateTodoInput') updateTodoInput: UpdateTodoInput) {
     return this.todoService.update(updateTodoInput.id, updateTodoInput);
   }
 
   @Mutation(() => Todo)
-  removeTodo(@Args('id', { type: () => Int }) id: number) {
+  @UseGuards(JwtAuthGuard)
+  removeTodo(@Args('id', { type: () => String }) id: string) {
     return this.todoService.remove(id);
   }
 }

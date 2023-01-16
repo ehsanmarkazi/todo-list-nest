@@ -30,11 +30,18 @@ export class TodoService {
     return await this.prisma.todo.findUnique({where:{id}})
   }
 
-  update(id: number, updateTodoInput: UpdateTodoInput) {
-    return `This action updates a #${id} todo`;
+  async update(id: string, updateTodoInput: UpdateTodoInput) {
+    return await this.prisma.todo.update({
+      where:{id},
+      data:{
+      ...updateTodoInput,
+        updateAt: new Date(),
+      }
+    })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} todo`;
-  }
+  async remove(id: string) {
+    return this.prisma.todo.delete({where:{id}}) 
+}
+
 }
