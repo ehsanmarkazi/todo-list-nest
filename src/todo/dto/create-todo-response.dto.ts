@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { User } from '@prisma/client';
+import { User } from 'src/user/entities/user.entity';
 
 
 @ObjectType()
@@ -16,5 +16,8 @@ export class CreateTodoResponse {
 
     @Field()
     status: string
+
+    @Field()
+    user: User
 
 }
