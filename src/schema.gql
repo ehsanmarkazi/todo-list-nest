@@ -12,6 +12,7 @@ type CreateTodoResponse {
   id: String!
   status: String!
   title: String!
+  user: User!
 }
 
 input CreateUserInput {
@@ -41,7 +42,7 @@ type Mutation {
 }
 
 type Query {
-  todo(id: Int!): Todo!
+  todo(id: String!): Todo!
   todos: [Todo!]!
   user(id: Int!): User!
 }
@@ -59,8 +60,11 @@ input RegisterUserInput {
 }
 
 type Todo {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  createdAt: String!
+  description: String!
+  id: String!
+  status: String!
+  title: String!
 }
 
 input UpdateTodoInput {
