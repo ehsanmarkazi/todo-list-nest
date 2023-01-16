@@ -3,8 +3,15 @@
 # ------------------------------------------------------
 
 input CreateTodoInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  description: String!
+  title: String!
+}
+
+type CreateTodoResponse {
+  description: String!
+  id: String!
+  status: String!
+  title: String!
 }
 
 input CreateUserInput {
@@ -24,7 +31,7 @@ input LoginUserInput {
 
 type Mutation {
   Register(registerUserInput: RegisterUserInput!): RegisterResponse!
-  createTodo(createTodoInput: CreateTodoInput!): Todo!
+  createTodo(createTodoInput: CreateTodoInput!): CreateTodoResponse!
   createUser(createUserInput: CreateUserInput!): User!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   removeTodo(id: Int!): Todo!
@@ -57,9 +64,9 @@ type Todo {
 }
 
 input UpdateTodoInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  description: String
   id: Int!
+  title: String
 }
 
 input UpdateUserInput {
