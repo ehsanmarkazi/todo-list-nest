@@ -1,4 +1,4 @@
-import { UseGuards, Get } from '@nestjs/common';
+import { UseGuards, ForbiddenException } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { TodoService } from './todo.service';
 import { Todo } from './entities/todo.entity';
@@ -8,10 +8,14 @@ import { JwtAuthGuard } from './../auth/guard/jwt.guard';
 import { CreateTodoResponse } from './dto/create-todo-response.dto';
 import { GetUser } from 'src/auth/decorator/get-user.decorator';
 import { User } from 'src/user/entities/user.entity';
+import { CheckAdminService } from 'src/shared/check-admin.service';
 
 @Resolver(() => Todo)
 export class TodoResolver {
-  constructor(private readonly todoService: TodoService) { }
+  constructor(
+    private readonly todoService: TodoService,
+    private readonly checkAdminService: CheckAdminService
+  ) { }
 
   @Mutation(() => CreateTodoResponse)
   @UseGuards(JwtAuthGuard)
@@ -21,7 +25,7 @@ export class TodoResolver {
 
   @Query(() => [Todo], { name: 'todos' })
   @UseGuards(JwtAuthGuard)
-  findAll(@GetUser() user:User) {
+  findAll(@GetUser() user: User) {
     return this.todoService.findAll(user.id);
   }
 
@@ -33,13 +37,17 @@ export class TodoResolver {
 
   @Mutation(() => Todo)
   @UseGuards(JwtAuthGuard)
-  updateTodo(@Args('updateTodoInput') updateTodoInput: UpdateTodoInput) {
+  async updateTodo(@Args('updateTodoInput') updateTodoInput: UpdateTodoInput,@GetUser() user:User) {
+    const check = await this.checkAdminService.check(user.email, updateTodoInput.id);
+    if (!check) throw new ForbiddenException('User Not Access!');
     return this.todoService.update(updateTodoInput.id, updateTodoInput);
   }
 
   @Mutation(() => Todo)
   @UseGuards(JwtAuthGuard)
-  removeTodo(@Args('id', { type: () => String }) id: string) {
+  async removeTodo(@Args('id', { type: () => String }) id: string, @GetUser() user:User) {
+    const check = await this.checkAdminService.check(user.email, id);
+    if (!check) throw new ForbiddenException('User Not Access!');
     return this.todoService.remove(id);
   }
 }
